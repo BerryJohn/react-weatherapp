@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components'
 import { colors } from '../styledHelpers/colors';
 import AddPinForm from './AddPinForm/AddPinForm';
 import WeatherPins from './WeatherPins/WeatherPins';
 
-export interface ICity{
+export interface ICity {
     name: string;
     id: string;
 }
@@ -14,17 +14,15 @@ const App = () => {
     const [formOpen, setFormOpen] = useState<boolean>(false);
     const [cities, setCities] = useState<ICity[]>([]);
 
-    useEffect(() =>{
-        if(localStorage.getItem('cities') === null)
-        {
+    useEffect(() => {
+        if (localStorage.getItem('cities') === null) {
             localStorage.setItem('cities', '');
         }
-        else
-        {
+        else {
             const savedCities: ICity[] = JSON.parse(localStorage.getItem('cities') || '[]');
             setCitiesHandler(savedCities);
         }
-    },[]);
+    }, []);
 
     const setCitiesHandler = (newCities: ICity[]) => {
         setCities(newCities);
@@ -33,13 +31,13 @@ const App = () => {
     const openFormHandler = () => {
         setFormOpen(!formOpen);
     };
-    
+
     return (
         <Wrapper>
             <GlobalStyle />
-            <WeatherPins cities={cities} setCities={setCitiesHandler}/>
-            <AddPinForm visible={formOpen} setCities={setCitiesHandler}/>
-            <AddPinButton onClick={openFormHandler}/>
+            <WeatherPins cities={cities} setCities={setCitiesHandler} />
+            <AddPinForm visible={formOpen} setCities={setCitiesHandler} />
+            <AddPinButton onClick={openFormHandler} />
         </Wrapper>
     );
 }
@@ -67,7 +65,8 @@ const AddPinButton = styled.button`
 const GlobalStyle = createGlobalStyle`
   body { 
       color:${colors.white};
-      background-color:${colors.purple};
+      background: rgb(64,0,134);
+      background: linear-gradient(0deg, rgba(64,0,134,1) 0%, rgba(212,59,255,1) 100%); 
       font-family: 'Roboto', sans-serif;
       max-width:100vw;
       min-height:100%;
