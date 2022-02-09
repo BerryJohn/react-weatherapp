@@ -13,7 +13,7 @@ interface IWeatherPins{
 const WeatherPins:FC<IWeatherPins> = (props) => {
 
     return (
-        <>
+        <Wrapper>
             {props.cities.map(city =>
                 <Pin 
                     key={city.id}
@@ -22,8 +22,16 @@ const WeatherPins:FC<IWeatherPins> = (props) => {
                     setCities={props.setCities}    
                 />
             )}
-        </>
+        </Wrapper>
     );
 }
 
 export default WeatherPins;
+
+const Wrapper = styled.div`
+    width:100vw;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`;

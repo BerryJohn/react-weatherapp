@@ -67,11 +67,11 @@ const GlobalStyle = createGlobalStyle`
       color:${colors.white};
       background: rgb(64,0,134);
       background: linear-gradient(0deg, rgba(64,0,134,1) 0%, rgba(212,59,255,1) 100%); 
-      font-family: 'Roboto', sans-serif;
       max-width:100vw;
       min-height:100%;
       padding:0px;
       margin:0px;
       position:relative;
+      font-family: 'Lato', sans-serif;
   }
 `;
