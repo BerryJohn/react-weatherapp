@@ -1,23 +1,44 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components'
 import { colors } from '../styledHelpers/colors';
 import AddPinForm from './AddPinForm/AddPinForm';
 import WeatherPins from './WeatherPins/WeatherPins';
 
+export interface ICity{
+    name: string;
+    id: string;
+}
+
 const App = () => {
     const [formOpen, setFormOpen] = useState<boolean>(false);
+    const [cities, setCities] = useState<ICity[]>([]);
+
+    useEffect(() =>{
+        if(localStorage.getItem('cities') === null)
+        {
+            localStorage.setItem('cities', '');
+        }
+        else
+        {
+            const savedCities: ICity[] = JSON.parse(localStorage.getItem('cities') || '[]');
+            setCitiesHandler(savedCities);
+        }
+    },[]);
+
+    const setCitiesHandler = (newCities: ICity[]) => {
+        setCities(newCities);
+    };
 
     const openFormHandler = () => {
         setFormOpen(!formOpen);
-        console.log(formOpen);
-    }
-
+    };
+    
     return (
         <Wrapper>
             <GlobalStyle />
-            <WeatherPins />
-            <AddPinForm visible={formOpen} />
+            <WeatherPins cities={cities} setCities={setCitiesHandler}/>
+            <AddPinForm visible={formOpen} setCities={setCitiesHandler}/>
             <AddPinButton onClick={openFormHandler}/>
         </Wrapper>
     );

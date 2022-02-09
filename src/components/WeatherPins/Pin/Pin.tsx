@@ -1,11 +1,29 @@
 import * as React from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 import { colors } from '../../../styledHelpers/colors';
+import { ICity } from '../../App';
 
-const Pin = () => {
+interface IPin extends ICity{
+    setCities(newCities: ICity[]): void;
+}
+
+const Pin: FC<IPin> = (props) => {
+
+    const deleteHandler = () => {
+        if(localStorage.getItem('cities') !== null)
+        {
+            const savedCities: ICity[] = JSON.parse(localStorage.getItem('cities') || '[]');
+            const newCities = savedCities.filter(city => city.id !== props.id);
+            localStorage.setItem('cities', JSON.stringify(newCities));
+            props.setCities(newCities);
+        }
+    };
+
     return (
         <Wrapper>
-            test
+            {props.name}
+            <button onClick={deleteHandler}>delete</button>
         </Wrapper>
     );
 }

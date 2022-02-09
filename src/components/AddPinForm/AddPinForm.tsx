@@ -1,33 +1,30 @@
 import * as React from 'react';
 import { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { generateUUID } from '../../helpers/uuidGenerator';
 import { colors } from '../../styledHelpers/colors';
+import { ICity } from '../App';
 
 interface IAddPinForm{
     visible: boolean;
-}
-
-interface ICity{
-    name: string;
+    setCities(newCities: ICity[]): void;
 }
 
 const AddPinForm: FC<IAddPinForm> = (props) => {
 
     const [cityInput, setCityInput] = useState<string>('');
 
-    useEffect(() =>{
-        if(localStorage.getItem('cities') === null)
-            localStorage.setItem('cities', '');
-        
-    },[]);
-
     const addCityHandler = () => {
         if(localStorage.getItem('cities') !== null)    
         {
             let cities: ICity[] = JSON.parse(localStorage.getItem('cities') || '[]');
-            let newCity: ICity = {name: cityInput}
+            let newCity: ICity = {
+                name: cityInput, 
+                id: `${generateUUID()}`,
+            };
             cities.push(newCity);
             localStorage.setItem('cities', JSON.stringify(cities));
+            props.setCities(cities);
         }
     };
 
@@ -47,7 +44,7 @@ interface IWrapper{
 const Wrapper = styled.div<IWrapper>`
     height:100px;
     width:200px;
-    position:relative;
+    position:fixed;
     left:calc(50% - 100px);
     top:calc(50% - 50px);
     background-color:red;
