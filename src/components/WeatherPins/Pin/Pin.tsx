@@ -1,16 +1,20 @@
 import * as React from 'react';
-import { FC, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { FC, useEffect, useRef, useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 import { colors } from '../../../styledHelpers/colors';
 import { ICity } from '../../App';
 import API from '../../../helpers/api';
-import { WiBarometer, WiHumidity, WiStrongWind } from "react-icons/wi";
+import { WiBarometer, WiHumidity, WiStrongWind, WiCloud, WiNightAltSnow, WiNightClear, WiNightAltThunderstorm, WiNightAltShowers, WiNightFog, WiNightAltRain, WiNightAltCloudy, WiDaySunny, WiDayCloudy, WiDaySnow, WiDayThunderstorm, WiDayShowers, WiDayRain, WiDayFog } from "react-icons/wi";
+import { VscChromeClose } from "react-icons/vsc";
+
 
 interface IPin extends ICity {
     setCities(newCities: ICity[]): void;
 }
 
 const Pin: FC<IPin> = (props) => {
+    //Refs
+    const cityNameRef = useRef<HTMLDivElement>(null);
     //States
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [data, setData] = useState<any>();
@@ -55,6 +59,47 @@ const Pin: FC<IPin> = (props) => {
         return new Date(localDateTime).getHours();
     };
 
+    const getCityImage = () => {
+        const cityTime = getCityTime();
+        if(cityTime >= 20 && cityTime < 6){
+            switch (data?.weather[0].main) {
+                case 'Clouds':
+                    return (<WiNightAltCloudy />);
+                case 'Snow':
+                    return (<WiNightAltSnow />);
+                case 'Clear':
+                    return (<WiNightClear />);
+                case 'Thunderstorm':
+                    return (<WiNightAltThunderstorm />);
+                case 'Drizzle':
+                    return (<WiNightAltShowers />);
+                case 'Rain':
+                    return (<WiNightAltRain />);
+                default:
+                    return (<WiNightFog />);
+            }
+        }
+        else {
+            switch (data?.weather[0].main) {
+                case 'Clouds':
+                    return (<WiDayCloudy />);
+                case 'Snow':
+                    return (<WiDaySnow />);
+                case 'Clear':
+                    return (<WiDaySunny />);
+                case 'Thunderstorm':
+                    return (<WiDayThunderstorm />);
+                case 'Drizzle':
+                    return (<WiDayShowers />);
+                case 'Rain':
+                    return (<WiDayRain />);
+                default:
+                    return (<WiDayFog />);
+            }
+         }
+    };
+
+
     if (!isLoaded)
         return (
             <Wrapper>
@@ -64,9 +109,9 @@ const Pin: FC<IPin> = (props) => {
     else
         return (
             <Wrapper time={getCityTime()}>
-                <City>
+                <CityName ref={cityNameRef} cityLength={cityNameRef?.current ? cityNameRef.current!.scrollWidth : 0}>
                     {data?.name}
-                </City>
+                </CityName>
                 <CityDate>
                     {transformDate()}
                 </CityDate>
@@ -77,7 +122,7 @@ const Pin: FC<IPin> = (props) => {
                     {data?.weather[0].main}
                 </WeatherText>
                 <CityImage>
-
+                    {getCityImage()}
                 </CityImage>
                 <CityInfo>
                     <Info>
@@ -86,27 +131,39 @@ const Pin: FC<IPin> = (props) => {
                     </Info>
                     <Info>
                         <WiBarometer />
-                        <p>{data?.main.pressure}</p>
+                        <p>{data?.main.pressure}hPa</p>
                     </Info>
                     <Info>
                         <WiHumidity />
                         <p>{data?.main.humidity}%</p>
                     </Info>
                 </CityInfo>
-                {/* <button onClick={deleteHandler}>delete</button> */}
+                <DeleteWrapper onClick={deleteHandler}>
+                    <VscChromeClose />
+                </DeleteWrapper>
             </Wrapper>
         );
 }
 
 export default Pin;
 
+////////styled
 
+//interfaces
 interface IWrapper {
     time?: number;
 }
 
+interface ICityName{
+    cityLength: number;
+}
+
+///
+
 const Wrapper = styled.div<IWrapper>`
-    width:300px;
+    overflow:hidden;
+    min-width:300px;
+    max-width:300px;
     height:500px;
     margin-right:15px;
     background-color:${colors.pink};
@@ -114,6 +171,7 @@ const Wrapper = styled.div<IWrapper>`
     box-sizing:border-box;
     padding:15px 10px;
     border-radius:2px;
+    position:relative;
     ${props => {
         if (props?.time === undefined) {
             return `
@@ -145,19 +203,35 @@ const Wrapper = styled.div<IWrapper>`
             background: linear-gradient(0deg, rgba(74,63,182,1) 0%, rgba(100,91,179,1) 25%, rgba(210,48,159,1)   100%);
         `;
         }
+        else if (props?.time >= 0) {
+            return `
+            background: rgb(74,63,182);
+            background: linear-gradient(0deg, rgba(74,63,182,1) 0%, rgba(100,91,179,1) 25%, rgba(30,24,88,1) 100%);
+        `;
+        }
     }};
 `;
 
-const City = styled.div`
+const CityName = styled.div<ICityName>`
+    cursor:default;
     color:${colors.white};
     text-transform: uppercase;
     font-size: 45px;
     font-weight: 300;
     letter-spacing: 3px;
     text-shadow: black 1px 1px 1px;
+    white-space:nowrap;
+    transition:1s;
+    ${props => (
+        props?.cityLength >= 280 &&`
+        &:hover{
+            transform:translateX(-${(props?.cityLength - 280)}px);
+        }`
+    )};
 `;
 
 const CityDate = styled.div`
+    cursor:default;
     font-weight: 300;
     font-size: 14px;
     color: #ffffffa9;
@@ -165,12 +239,14 @@ const CityDate = styled.div`
 `;
 
 const Temp = styled.div`
+    cursor:default;
     font-weight: 200;
     font-size: 50px;
     color: white;
     margin-top:5px;
 `;
 const WeatherText = styled.div`
+    cursor:default;
     font-weight: 200;
     font-size: 24px;
     color: white;
@@ -178,14 +254,18 @@ const WeatherText = styled.div`
 
 const CityImage = styled.div`
     margin-top:5px;
-    /* background-color:red; */
+    display:flex;
+    align-items:center;
+    justify-content:center;
     width:100%;
     height:200px;
+    font-size:170px;
+    overflow:hidden;
 `;
 
 const CityInfo = styled.div`
     margin-top:5px;
-    padding-top:5px;
+    padding-top:15px;
     border-top:1px solid #ffffffa9;
     color: #ffffffa9;
     width:100%;
@@ -208,5 +288,28 @@ const Info = styled.div`
     &:hover{
         color:white;
         transform:scale(1.1);
+    }
+`;
+
+const DeleteWrapper = styled.button`
+    background-color:transparent;
+    border:none;
+    cursor:pointer;
+    color: #ffffffa9;
+    width:40px;
+    height:40px;
+    position:absolute;
+    top:110px;
+    right:-20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    transition:.2s;
+    &:hover{
+        right:0px;
+        color:white;
+        background-color:#ffffff2f;
+        border-radius:2px;
     }
 `;

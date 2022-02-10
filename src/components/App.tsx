@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { VscAdd } from 'react-icons/vsc';
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components'
 import { colors } from '../styledHelpers/colors';
@@ -36,8 +37,10 @@ const App = () => {
         <Wrapper>
             <GlobalStyle />
             <WeatherPins cities={cities} setCities={setCitiesHandler} />
-            <AddPinForm visible={formOpen} setCities={setCitiesHandler} />
-            <AddPinButton onClick={openFormHandler} />
+            <AddPinForm visible={formOpen} setCities={setCitiesHandler} openHandler={openFormHandler}/>
+            <AddPinButton onClick={openFormHandler}>
+                <VscAdd />
+            </AddPinButton>
         </Wrapper>
     );
 }
@@ -45,21 +48,31 @@ const App = () => {
 export default App;
 
 const Wrapper = styled.div`
-      max-width:100vw;
+      min-width:100vw;
       min-height:100vh;
       position:relative;
+      overflow-y:hidden; 
 `;
 
 const AddPinButton = styled.button`
     border:none;
     width:40px;
     height:40px;
-    border-radius:20px;
+    border-radius:4px;
     background-color:${colors.lightPurple};
+    box-shadow: black -1px 0px 8px;
     cursor:pointer;
-    position:absolute;
+    position:fixed;
     bottom:20px;
     right:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    transition:.1s;
+    &:hover{
+        transform:scale(1.05);
+    }
 `;
 
 const GlobalStyle = createGlobalStyle`
@@ -67,7 +80,7 @@ const GlobalStyle = createGlobalStyle`
       color:${colors.white};
       background: rgb(64,0,134);
       background: linear-gradient(0deg, rgba(64,0,134,1) 0%, rgba(212,59,255,1) 100%); 
-      max-width:100vw;
+      min-width:100vw;
       min-height:100%;
       padding:0px;
       margin:0px;
