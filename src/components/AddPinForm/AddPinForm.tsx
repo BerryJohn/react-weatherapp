@@ -60,7 +60,10 @@ const AddPinForm: FC<IAddPinForm> = (props) => {
 
     const closeHandler = (e:any) => {
         if(e.target == formWrapper.current)
-            props.openHandler();
+            {
+                props.openHandler();
+                setCityError('');
+            }
     }
 
     return (
@@ -69,9 +72,14 @@ const AddPinForm: FC<IAddPinForm> = (props) => {
                 <CityError>
                     {cityInputError}
                 </CityError>
-                <InputWrapper>
-                    <FormInput value={cityInput} type='text' onChange={e => setCityInput(e.target.value)} />
-                </InputWrapper>
+                    <FormInput 
+                        placeholder='Enter city' 
+                        value={cityInput} 
+                        type='text' 
+                        onChange={e => setCityInput(e.target.value)}
+                        maxLength={60}
+                        minLength={1}
+                    />
                 <InputButton onClick={addCityHandler}>Add</InputButton>
             </Form>
         </Wrapper>
@@ -96,7 +104,6 @@ const Wrapper = styled.div<IWrapper>`
     visibility:hidden;
     background-color:#0000000;
     transform:scale(0.8);
-
     ${props => (props.open && ` 
         visibility:visible;
         background-color:#0000007b;
@@ -109,18 +116,19 @@ interface IForm {
     open: boolean;
 }
 const Form = styled.div<IForm>`
-    background: rgb(223,36,183);
-    background: linear-gradient(0deg, rgba(223,36,183,1) 0%, rgba(221,244,119,1) 100%);
+    background: #353134;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:space-around;
-    width:250px;
-    height:100px;
+    width:270px;
+    min-height:100px;
+    max-height:120px;
     border-radius:2px;
     opacity:0;
     box-shadow: black 0px 0px 5px;
     padding:5px 10px;
+    transition:.2s;
     ${props => (props.open && ` 
         opacity:1;
     `
@@ -132,17 +140,15 @@ const FormInput = styled.input`
     font-size:18px;
     width:245px;
     border:none;
-
+    background: #353134;
+    border-bottom:2px solid #524b50;
+    color:white;
+    transition:.2s;
+    border-radius:2px;
     &:focus{
-        border:none;
+        border-bottom:2px solid rgba(64,0,134,1);
         outline:none;
     }
-`;
-
-const InputWrapper = styled.div`
-    width:100%;
-    padding:4px;
-    background: linear-gradient(to right, #ff1e69, #10259c);
 `;
 
 const InputButton = styled.button`
@@ -170,6 +176,7 @@ const InputButton = styled.button`
 `;
 
 const CityError = styled.p`
-    color:black;
+    color:#ff004c;
     margin:0;
+    height:20px;
 `;

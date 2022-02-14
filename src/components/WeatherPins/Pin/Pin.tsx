@@ -4,7 +4,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { colors } from '../../../styledHelpers/colors';
 import { ICity } from '../../App';
 import API from '../../../helpers/api';
-import { WiBarometer, WiHumidity, WiStrongWind, WiCloud, WiNightAltSnow, WiNightClear, WiNightAltThunderstorm, WiNightAltShowers, WiNightFog, WiNightAltRain, WiNightAltCloudy, WiDaySunny, WiDayCloudy, WiDaySnow, WiDayThunderstorm, WiDayShowers, WiDayRain, WiDayFog } from "react-icons/wi";
+import { WiBarometer, WiHumidity, WiStrongWind, WiNightAltSnow, WiNightClear, WiNightAltThunderstorm, WiNightAltShowers, WiNightFog, WiNightAltRain, WiNightAltCloudy, WiDaySunny, WiDayCloudy, WiDaySnow, WiDayThunderstorm, WiDayShowers, WiDayRain, WiDayFog } from "react-icons/wi";
 import { VscChromeClose } from "react-icons/vsc";
 
 
@@ -61,7 +61,7 @@ const Pin: FC<IPin> = (props) => {
 
     const getCityImage = () => {
         const cityTime = getCityTime();
-        if(cityTime >= 20 && cityTime < 6){
+        if (cityTime >= 20 && cityTime < 6) {
             switch (data?.weather[0].main) {
                 case 'Clouds':
                     return (<WiNightAltCloudy />);
@@ -96,15 +96,17 @@ const Pin: FC<IPin> = (props) => {
                 default:
                     return (<WiDayFog />);
             }
-         }
+        }
     };
 
 
     if (!isLoaded)
         return (
-            <Wrapper>
-                louuuding
-            </Wrapper>
+            <LoadingWrapper>
+                <LoadWrapper>
+                    LOADING
+                </LoadWrapper>
+            </LoadingWrapper>
         );
     else
         return (
@@ -154,7 +156,7 @@ interface IWrapper {
     time?: number;
 }
 
-interface ICityName{
+interface ICityName {
     cityLength: number;
 }
 
@@ -162,6 +164,7 @@ interface ICityName{
 
 const Wrapper = styled.div<IWrapper>`
     overflow:hidden;
+    margin:15px 0;
     min-width:300px;
     max-width:300px;
     height:500px;
@@ -176,7 +179,6 @@ const Wrapper = styled.div<IWrapper>`
         if (props?.time === undefined) {
             return `
             background: rgb(74,63,182);
-            background: linear-gradient(0deg, #3fb649 0%, #d51a1a 100%);
         `;
         }
         else if (props?.time >= 22) {
@@ -223,7 +225,7 @@ const CityName = styled.div<ICityName>`
     white-space:nowrap;
     transition:1s;
     ${props => (
-        props?.cityLength >= 280 &&`
+        props?.cityLength >= 280 && `
         &:hover{
             transform:translateX(-${(props?.cityLength - 280)}px);
         }`
@@ -312,4 +314,25 @@ const DeleteWrapper = styled.button`
         background-color:#ffffff2f;
         border-radius:2px;
     }
+`;
+
+
+///////
+
+const LoadingWrapper = styled(Wrapper)`
+    display:flex;
+    align-items:center;
+    justify-content:center;
+`
+
+const BounceAnimation = keyframes`
+    0% { transform:rotate(0deg); }
+    100% { transform:rotate(360deg); }
+`;
+const LoadWrapper = styled.div`
+    border: 2px solid white;
+    width:60px;
+    height:60px;
+    border-radius:2px;
+    animation: ${BounceAnimation} 2s linear infinite;
 `;

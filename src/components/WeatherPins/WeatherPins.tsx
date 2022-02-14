@@ -29,8 +29,11 @@ export default WeatherPins;
 
 const Wrapper = styled.div`
     min-width:100vw;
-    height:100vh;
+    max-width:100vw;
+    min-height:100vh;
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content: safe center;
+    flex-wrap:wrap;
+    overflow:hidden;
 `;
