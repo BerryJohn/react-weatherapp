@@ -52,7 +52,7 @@ const AddPinForm: FC<IAddPinForm> = (props) => {
                         }
                     },
                     (error) => {
-                        setCityError('Uknown error');
+                        setCityError('Unknown error');
                     }
                 );
         }
