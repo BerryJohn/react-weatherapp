@@ -20,7 +20,7 @@ const AddPinForm: FC<IAddPinForm> = (props) => {
 
     const addCityHandler = () => {
         if (localStorage.getItem('cities') !== null) {
-            fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cityInput}&lang=eng&units=metric&appid=${API.key}`)
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&lang=eng&units=metric&appid=${API.key}`)
                 .then(res => res.json())
                 .then(
                     (result) => {

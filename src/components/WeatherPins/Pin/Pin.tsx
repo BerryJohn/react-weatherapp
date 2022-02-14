@@ -20,7 +20,7 @@ const Pin: FC<IPin> = (props) => {
     const [data, setData] = useState<any>();
     //UseEffects
     useEffect(() => {
-        fetch(`http://api.openweathermap.org/data/2.5/weather?q=${props.name}&lang=eng&units=metric&appid=${API.key}`)
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${props.name}&lang=eng&units=metric&appid=${API.key}`)
             .then(res => res.json())
             .then(
                 (result) => {
