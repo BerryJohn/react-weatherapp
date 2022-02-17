@@ -18,17 +18,25 @@ const Pin: FC<IPin> = (props) => {
     //States
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [data, setData] = useState<any>();
+    const [error, setError] = useState<string>();
     //UseEffects
     useEffect(() => {
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${props.name}&lang=eng&units=metric&appid=${API.key}`)
             .then(res => res.json())
             .then(
                 (result) => {
-                    setIsLoaded(true);
-                    setData(result);
+                    if(result.cod === 200)
+                    {
+                        setIsLoaded(true);
+                        setData(result);
+                    }
+                    else if(result.cod === '404')// 404 is string in openweather api lol
+                    {
+                        setError(`Wrong city name!`);
+                    }
                 },
                 (error) => {
-                    setIsLoaded(true);
+                    setError(`Error: ${error}`);
                 }
             )
     }, []);
@@ -106,6 +114,10 @@ const Pin: FC<IPin> = (props) => {
                 <LoadWrapper>
                     LOADING
                 </LoadWrapper>
+                <DeleteWrapper onClick={deleteHandler}>
+                    <VscChromeClose />
+                </DeleteWrapper>
+                {error}
             </LoadingWrapper>
         );
     else
@@ -164,11 +176,10 @@ interface ICityName {
 
 const Wrapper = styled.div<IWrapper>`
     overflow:hidden;
-    margin:15px 0;
+    margin:15px 10px;
     min-width:300px;
     max-width:300px;
     height:500px;
-    margin-right:15px;
     background-color:${colors.pink};
     box-shadow: #5a164f -3px -1px 15px;
     box-sizing:border-box;
@@ -321,6 +332,7 @@ const DeleteWrapper = styled.button`
 
 const LoadingWrapper = styled(Wrapper)`
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
 `

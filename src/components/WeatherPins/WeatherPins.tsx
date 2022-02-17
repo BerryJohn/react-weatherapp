@@ -13,7 +13,7 @@ const WeatherPins:FC<IWeatherPins> = (props) => {
 
     return (
         <Wrapper>
-            {props.cities.map(city =>
+            {props.cities?.map(city =>
                 <Pin 
                     key={city.id}
                     id={city.id}
